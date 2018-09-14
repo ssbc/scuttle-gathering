@@ -2,7 +2,7 @@ const { isAttendee } = require('ssb-gathering-schema')
 
 module.exports = function (server) {
   return function buildAttendee (gatheringKey, isAttending, cb) {
-    if (!cb) return buildAttendee(gatheringKey, true, cb)
+    if (!cb) return buildAttendee(gatheringKey, true, isAttending)
 
     const content = { type: 'about', about: gatheringKey }
     content.attendee = isAttending
