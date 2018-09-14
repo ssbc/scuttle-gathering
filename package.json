@@ -1,10 +1,10 @@
 {
   "name": "scuttle-gathering",
-  "version": "1.0.0",
+  "version": "0.0.1",
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
+    "test": "tape '{,!(node_modules)/**/}*.test.js' | tap-spec",
     "test-server": "node research/server.js"
   },
   "repository": {
@@ -12,20 +12,26 @@
     "url": "git+https://github.com/ssbc/scuttle-gathering.git"
   },
   "keywords": [],
-  "author": "",
-  "license": "MIT",
+  "author": "mixmix",
+  "license": "AGPL-3.0",
   "bugs": {
     "url": "https://github.com/ssbc/scuttle-gathering/issues"
   },
   "homepage": "https://github.com/ssbc/scuttle-gathering#readme",
+  "dependencies": {
+    "lodash.pick": "^4.4.0",
+    "pull-stream": "^3.6.8",
+    "scuttle-inject": "^1.0.3",
+    "ssb-gathering-schema": "^1.0.0"
+  },
   "devDependencies": {
+    "scuttle-testbot": "^1.1.6",
     "scuttlebot": "^11.3.3",
     "ssb-backlinks": "^0.7.1",
     "ssb-config": "^2.2.0",
-    "ssb-query": "^2.1.0"
-  },
-  "dependencies": {
-    "pull-stream": "^3.6.8",
-    "scuttle-inject": "^1.0.0"
+    "ssb-query": "^2.1.0",
+    "tap-spec": "^5.0.0",
+    "tape": "^4.9.1",
+    "tape-plus": "^1.0.0"
   }
 }
