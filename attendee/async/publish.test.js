@@ -1,7 +1,7 @@
 const { group } = require('tape-plus')
-const Server = require('scuttle-testbot')
-const Scuttle = require('../../')
 const { isAttendee } = require('ssb-gathering-schema')
+const Scuttle = require('../../')
+const Server = require('../../lib/testbot')
 
 group('attendee.async.publish', test => {
   var server
@@ -44,5 +44,4 @@ group('attendee.async.publish', test => {
       })
     })
   })
-
 })

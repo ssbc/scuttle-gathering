@@ -1,6 +1,7 @@
 const { group } = require('tape-plus')
-const Server = require('scuttle-testbot')
 const Scuttle = require('../../')
+const Server = require('../../lib/testbot')
+const getBacklinks = require('../../lib/get-backlinks')
 
 group('gathering.async.publish', test => {
   var server
@@ -23,12 +24,17 @@ group('gathering.async.publish', test => {
       }
     }
 
-    scuttle.gathering.async.publish(opts, (err, data) => {
+    scuttle.gathering.async.publish(opts, (err, gathering) => {
       t.false(err, 'no error')
-      t.true(data.key && data.value, 'happy message data')
-      // console.log(JSON.stringify(data, null, 2))
+      t.equal(gathering.value.content.type, 'gathering', 'calls back with gathering msg')
 
-      done()
+      getBacklinks(server)(gathering, (err, backlinks) => {
+        if (err) console.log(err)
+
+        t.true(backlinks.length === 1, 'there is only one backlink')
+        t.equal(backlinks[0].value.content.type, 'about', 'the backlink is an about message')
+        done()
+      })
     })
   })
 
@@ -52,7 +58,7 @@ group('gathering.async.publish', test => {
   test('missing startDateTime', (t, done) => {
     const opts = {
       title: 'ziva\'s birthday party',
-      description: 'it\'s been a hell of a year. come join us to celebrate the start of this gorgeous human',
+      description: 'it\'s been a hell of a year. come join us to celebrate the start of this gorgeous human'
     }
 
     scuttle.gathering.async.publish(opts, (err, data) => {

@@ -1,6 +1,7 @@
 module.exports = {
   gathering: {
     async: {
+      get: require('./gathering/async/get'),
       publish: require('./gathering/async/publish')
     }
   },
