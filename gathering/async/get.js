@@ -16,7 +16,16 @@ module.exports = function (server) {
         const updates = backlinks
           .filter(isUpdate)
           .map(m => permittedOpts(m.value.content))
-          .reduce((acc, update) => merge(acc, update), {})
+          .reduce((acc, update) => {
+            const { image } = update
+            if (image) {
+              acc.image = image
+              if (!acc.images.find(i => i.link === image.link)) acc.images.push(image)
+              delete update.image
+            }
+
+            return merge(acc, update)
+          }, { images: [] })
 
         cb(null, merge(doc, updates))
       })
