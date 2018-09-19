@@ -11,7 +11,9 @@ var scuttle = Scuttle(server) // a scuttlebutt server or connection to one
 
 ## API Methods
 
-### `scuttle.gathering.async.publish(opts, cb)`
+### `scuttle.post(opts, cb)`
+
+alias of:  `scuttle.gathering.async.publish`
 
 `opts` : an Object of form (`title` and `startDateTime` are the only required properties)
 
@@ -36,7 +38,9 @@ var scuttle = Scuttle(server) // a scuttlebutt server or connection to one
 `cb` : a callback of signature `(err, data)`
 
 
-### `scuttle.update.async.publish(gatheringKey, opts, cb)`
+### `scuttle.put(gatheringKey, opts, cb)`
+
+alias of `scuttle.update.async.publish`
 
 `gatheringKey` is a messageId for your gathering
 `opts` is an Object of any of the gathering details you'd like to update (title, startDateTime, description, location, image, etc in the appropriate formats)
@@ -44,7 +48,9 @@ var scuttle = Scuttle(server) // a scuttlebutt server or connection to one
 `cb` : a callback of signature `(err, data)`
 
 
-### `scuttle.attendee.async.publish(gatheringKey, isAttending, cb)`
+### `scuttle.attending(gatheringKey, isAttending, cb)`
+
+alias of `scuttle.attendee.async.publish`
 
 Publishes a message updating whether or not you're attending the gathering.
 
@@ -52,7 +58,36 @@ Publishes a message updating whether or not you're attending the gathering.
 `isAttending` is a Boolean
 `cb` : a callback of signature `(err, data)`
 
-NOTE - can also be called `scuttle.attendee.async.publish(key, cb)` which is the same as saying `isAttending` true
+NOTE - can also be called `scuttle.attendee(key, cb)` which is the same as saying `isAttending` true
+
+### `scuttle.get(gatheringKey, cb)`
+
+alias of `scuttle.gathering.async.get`
+
+Gets a 'document' - a reduced state of the 'gathering as a whole' of the form:
+
+```js
+{
+  key: MessageId,
+  title: String,
+  startDateTime: {
+    epoch: UnixTime,
+    tz: String                 // *
+  },
+  description: String,
+  location: String,
+  image: {
+    link: Blob,
+    name: String,             // *
+    size: Integer,            // *
+    type: MimeTypeString      // *
+  },
+  images: [ Image, Image, ... ] // Objects of same form as image property
+  attendees: [ FeedId, FeedId, ... ]
+}
+```
+
+Strings that haven't been set will be empty strings, sub-properties marked with `*` are optional and may not be present.
 
 ## License
 

@@ -1,7 +1,6 @@
 const { group } = require('tape-plus')
 const Server = require('../../lib/testbot')
 const { isMsg } = require('ssb-ref')
-const { isGathering } = require('ssb-gathering-schema')
 const Scuttle = require('../../')
 
 group('gathering.async.get', test => {
@@ -25,13 +24,14 @@ group('gathering.async.get', test => {
         t.false(err, 'no error')
 
         t.true(isMsg(doc.key), 'valid key')
-        t.true(isGathering(doc.value), 'valid gathering value')
 
         t.equal(doc.title, 'ziva\'s birthday', 'has title')
         t.deepEqual(doc.startDateTime, { epoch: now + 750, tz: 'Pacific/ Auckland' }, 'has edited time startDateTime')
         t.equal(doc.location, 'our place in mirimar')
-        t.deepEqual(doc.image, { link: '&AnotherImage//z3os/qA9+YJndRmbJQXl8LYfBquz4=.sha256' }, 'has single image')
 
+        t.equal(doc.description, '', 'unset String field returns empty string')
+
+        t.deepEqual(doc.image, { link: '&AnotherImage//z3os/qA9+YJndRmbJQXl8LYfBquz4=.sha256' }, 'has single image')
         t.deepEqual(doc.images, [
           {
             link: '&l/Mr4CqSFYtCsrz3os/qA9+YJndRmbJQXl8LYfBquz4=.sha256',
