@@ -27,7 +27,22 @@ module.exports = function (server) {
             return merge(acc, update)
           }, { images: [] })
 
-        cb(null, merge(doc, updates))
+        const attendees = backlinks
+          .filter(isAttendee)
+          .reduce((acc, msg) => {
+            const { link, remove } = msg.value.content.attendee
+            // only trust attendee calls from people themselves for now
+            if (msg.value.author !== link) return acc
+
+            if (remove) {
+              return acc.filter(feedId => feedId !== link)
+            } else {
+              if (acc.includes(link)) return acc
+              else return [...acc, link]
+            }
+          }, [])
+
+        cb(null, merge(doc, updates, { attendees }))
       })
     })
   }

@@ -42,7 +42,16 @@ group('gathering.async.get', test => {
           { link: '&AnotherImage//z3os/qA9+YJndRmbJQXl8LYfBquz4=.sha256' }
         ], 'has all images added')
 
-        done()
+        t.deepEqual(doc.attendees, [ server.id ], 'shows me attending')
+        scuttle.attendee.async.publish(gathering.key, false, (err, attendee) => {
+          if (err) throw (err)
+          scuttle.gathering.async.get(gathering.key, (err, doc) => {
+            if (err) throw (err)
+            t.deepEqual(doc.attendees, [], 'shows me no longer attending')
+
+            done()
+          })
+        })
       })
     })
   })
@@ -51,8 +60,7 @@ group('gathering.async.get', test => {
   function setupGathering (cb) {
     var epoch = now + 5000
 
-    // publish gathering
-    const opts = {
+    const initialGathering = {
       title: 'ziva\'s birthday',
       startDateTime: {
         epoch,
@@ -65,19 +73,21 @@ group('gathering.async.get', test => {
         type: 'image/jpeg'
       }
     }
-    scuttle.gathering.async.publish(opts, (err, gathering) => {
+
+    const anUpdate = {
+      startDateTime: { epoch: now + 750 },
+      location: 'our place in mirimar',
+      image: {
+        'link': '&AnotherImage//z3os/qA9+YJndRmbJQXl8LYfBquz4=.sha256'
+      }
+    }
+
+    // publish gathering
+    scuttle.gathering.async.publish(initialGathering, (err, gathering) => {
       if (err) return cb(err)
 
       // make an update
-      epoch = now + 750
-      const opts = {
-        startDateTime: { epoch },
-        location: 'our place in mirimar',
-        image: {
-          'link': '&AnotherImage//z3os/qA9+YJndRmbJQXl8LYfBquz4=.sha256'
-        }
-      }
-      scuttle.update.async.publish(gathering.key, opts, (err, update) => {
+      scuttle.update.async.publish(gathering.key, anUpdate, (err, update) => {
         if (err) return cb(err)
 
         // attend it
