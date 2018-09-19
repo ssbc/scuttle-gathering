@@ -9,6 +9,9 @@ module.exports = function (server) {
       ? { link: server.id }
       : { link: server.id, remove: true }
 
+    // TODO add branch link in update/async/build.js
+    // this isn't as critical as that case though :)
+
     if (isAttendee(content)) cb(null, content)
     else cb(isAttendee.errors || new Error('Gathering attendee malformed', content))
   }

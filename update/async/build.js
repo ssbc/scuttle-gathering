@@ -1,7 +1,7 @@
-const pick = require('lodash.pick')
 const { isUpdate } = require('ssb-gathering-schema')
 const { isGathering } = require('ssb-gathering-schema')
 const getHeads = require('../../lib/get-heads')
+const permittedOpts = require('../../lib/permitted-opts')
 
 module.exports = function (server) {
   return function buildUpdate (gatheringOrKey, opts, cb) {
@@ -39,9 +39,3 @@ module.exports = function (server) {
   }
 }
 
-function permittedOpts (opts) {
-  const ALLOWED_OPTS = 'title startDateTime location description image'
-    .split(' ')
-
-  return pick(opts, ALLOWED_OPTS)
-}

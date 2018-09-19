@@ -19,10 +19,12 @@
   },
   "homepage": "https://github.com/ssbc/scuttle-gathering#readme",
   "dependencies": {
+    "lodash.merge": "^4.6.1",
     "lodash.pick": "^4.4.0",
     "pull-stream": "^3.6.9",
     "scuttle-inject": "^1.0.3",
     "ssb-gathering-schema": "^1.0.0",
+    "ssb-ref": "^2.11.2",
     "ssb-sort": "^1.1.0"
   },
   "devDependencies": {
