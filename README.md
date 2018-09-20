@@ -83,7 +83,9 @@ Gets a 'document' - a reduced state of the 'gathering as a whole' of the form:
     type: MimeTypeString      // *
   },
   images: [ Image, Image, ... ] // Objects of same form as image property
-  attendees: [ FeedId, FeedId, ... ]
+  attendees: [ FeedId, FeedId, ... ],
+  heads: [ MessageId, .... ], // most recent message(s) in the document/ thread
+  threads: [ MessageId, ... ] // all backlinks in causal order
 }
 ```
 
