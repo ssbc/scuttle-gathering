@@ -85,6 +85,7 @@ Gets a 'document' - a reduced state of the 'gathering as a whole' of the form:
     type: MimeTypeString      // *
   },
   images: [ Image, Image, ... ] // Objects of same form as image property
+  isAttendee: Boolean,
   attendees: [ FeedId, FeedId, ... ],
   heads: [ MessageId, .... ], // most recent message(s) in the document/ thread
   threads: [ MessageId, ... ] // all backlinks in causal order
@@ -93,10 +94,6 @@ Gets a 'document' - a reduced state of the 'gathering as a whole' of the form:
 
 Strings that haven't been set will be empty strings, sub-properties marked with `*` are optional and may not be present.
 
-
-### `scuttle.id`
-
-Your feedId, just pinned onto the scuttle helper as a property all sneaky like
 
 ## License
 

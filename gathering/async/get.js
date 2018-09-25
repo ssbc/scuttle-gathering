@@ -29,7 +29,7 @@ module.exports = function (server) {
             heads: heads([gathering, ...backlinks])
           },
           reduceUpdates(backlinks),
-          reduceAttendees(backlinks)
+          reduceAttendees(server.id, backlinks)
         )
         cb(null, doc)
       })
@@ -53,7 +53,7 @@ function reduceUpdates (backlinks) {
     }, { images: [] })
 }
 
-function reduceAttendees (backlinks) {
+function reduceAttendees (myKey, backlinks) {
   const attendees = backlinks
     .filter(isAttendee)
     .reduce((acc, msg) => {
@@ -69,5 +69,8 @@ function reduceAttendees (backlinks) {
       }
     }, [])
 
-  return { attendees }
+  return {
+    isAttendee: attendees.includes(myKey),
+    attendees
+  }
 }

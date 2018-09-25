@@ -14,8 +14,5 @@ const niceMappings = {
 module.exports = function (server, opts) {
   const methods = merge(niceMappings, raw)
 
-  const api = inject(server, methods, PLUGIN_DEPS)
-  api.id = server.id
-
-  return api
+  return inject(server, methods, PLUGIN_DEPS)
 }
