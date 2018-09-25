@@ -14,5 +14,6 @@ module.exports = {
     async: {
       publish: require('./attendee/async/publish')
     }
-  }
+  },
+  myKey: (server) => () => server.id
 }

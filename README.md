@@ -2,11 +2,13 @@
 
 Returns a set of functions as an API for validating, building, publishing and reading records related to gatherings
 
-## Instantiate
+## Usage
 
 ```js
 var Scuttle = require('scuttle-gathering')
 var scuttle = Scuttle(server) // a scuttlebutt server or connection to one
+
+scuttle.get(gatheringKey, (err, niceDataObject) => { ... })
 ```
 
 ## API Methods
@@ -28,7 +30,7 @@ alias of:  `scuttle.gathering.async.publish`
   location: String,      // optional
   image: {               // optional
     link: Blob,
-    name: String,        // name, size type are optional
+    name: String,        // name, size, type are optional
     size: Integer,
     type: MimeTypeString
   }
@@ -90,6 +92,11 @@ Gets a 'document' - a reduced state of the 'gathering as a whole' of the form:
 ```
 
 Strings that haven't been set will be empty strings, sub-properties marked with `*` are optional and may not be present.
+
+
+### `scuttle.myKey() => feedId`
+
+A synchronous method which returns your feedId
 
 ## License
 
