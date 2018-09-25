@@ -94,9 +94,9 @@ Gets a 'document' - a reduced state of the 'gathering as a whole' of the form:
 Strings that haven't been set will be empty strings, sub-properties marked with `*` are optional and may not be present.
 
 
-### `scuttle.myKey() => feedId`
+### `scuttle.id`
 
-A synchronous method which returns your feedId
+Your feedId, just pinned onto the scuttle helper as a property all sneaky like
 
 ## License
 
