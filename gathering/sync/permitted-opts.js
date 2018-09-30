@@ -1,6 +1,7 @@
 const pick = require('lodash.pick')
-const PERMITTED_OPTS = 'title startDateTime location description image'
+const PERMITTED_OPTS = 'progenitor mentions'
   .split(' ')
+// TODO add recps when we enable private gatherings
 
 module.exports = function permittedOpts (opts) {
   return pick(opts, PERMITTED_OPTS)

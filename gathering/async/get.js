@@ -2,10 +2,10 @@ const { isUpdate, isAttendee } = require('ssb-gathering-schema')
 const { heads } = require('ssb-sort')
 const merge = require('lodash.merge')
 const getBacklinks = require('../../lib/get-backlinks')
-const permittedOpts = require('../../lib/permitted-opts')
+const permittedGathering = require('../sync/permitted-opts')
+const permittedUpdates = require('../../update/sync/permitted-opts')
 
 const EMPTY_DOC = {
-  key: '',
   title: '',
   location: '',
   description: ''
@@ -18,18 +18,20 @@ module.exports = function (server) {
 
       const gathering = { key, value }
 
-      getBacklinks(server)(gathering, (err, backlinks) => {
+      getBacklinks(server)(gathering, (err, { thread, backlinks }) => {
         if (err) return cb(err)
 
-        const doc = merge({},
+        const doc = merge(
+          { key },
+          permittedGathering(gathering.value.content),
           EMPTY_DOC,
           {
-            key,
-            thread: backlinks,
-            heads: heads([gathering, ...backlinks])
+            thread,
+            backlinks,
+            heads: heads([gathering, ...thread])
           },
-          reduceUpdates(backlinks),
-          reduceAttendees(server.id, backlinks)
+          reduceUpdates(thread),
+          reduceAttendees(server.id, thread)
         )
         cb(null, doc)
       })
@@ -37,10 +39,10 @@ module.exports = function (server) {
   }
 }
 
-function reduceUpdates (backlinks) {
-  return backlinks
+function reduceUpdates (thread) {
+  return thread
     .filter(isUpdate)
-    .map(m => permittedOpts(m.value.content))
+    .map(m => permittedUpdates(m.value.content))
     .reduce((acc, update) => {
       const { image } = update
       if (image) {
@@ -53,8 +55,8 @@ function reduceUpdates (backlinks) {
     }, { images: [] })
 }
 
-function reduceAttendees (myKey, backlinks) {
-  const attendees = backlinks
+function reduceAttendees (myKey, thread) {
+  const attendees = thread
     .filter(isAttendee)
     .reduce((acc, msg) => {
       const { link, remove } = msg.value.content.attendee

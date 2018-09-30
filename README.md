@@ -26,6 +26,7 @@ alias of:  `scuttle.gathering.async.publish`
     epoch: UnixTime,
     tz: String           // tz is optional
   },
+  progenitor: MessageId, // optional
   description: String,   // optional
   location: String,      // optional
   image: {               // optional
@@ -76,6 +77,7 @@ Gets a 'document' - a reduced state of the 'gathering as a whole' of the form:
     epoch: UnixTime,
     tz: String                 // *
   },
+  progenitor: MessageId,
   description: String,
   location: String,
   image: {

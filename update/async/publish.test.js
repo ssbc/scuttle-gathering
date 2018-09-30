@@ -28,10 +28,10 @@ group('update.async.publish', test => {
     scuttle.gathering.async.publish(opts, (err, gathering) => {
       if (err) console.error(err)
 
-      getBacklinks(server)(gathering, (err, backlinks) => {
+      getBacklinks(server)(gathering, (err, { thread, backlinks }) => {
         if (err) console.error(err)
 
-        const [ initialUpdate ] = backlinks
+        const [ initialUpdate ] = thread
         t.equal(initialUpdate.value.content.branch, gathering.key, 'initial update has backlink of gathering')
 
         const opts = {
@@ -43,10 +43,10 @@ group('update.async.publish', test => {
           if (err) console.error(err)
           console.error('test err')
 
-          getBacklinks(server)(gathering, (err, backlinks) => {
+          getBacklinks(server)(gathering, (err, { thread, backlinks }) => {
             if (err) console.error(err)
 
-            const [ initialUpdate, secondUpdate ] = backlinks
+            const [ initialUpdate, secondUpdate ] = thread
             t.deepEqual(secondUpdate.value.content.branch, [initialUpdate.key], 'second update has backlink of initial update')
 
             done()

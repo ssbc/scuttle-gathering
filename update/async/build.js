@@ -1,11 +1,14 @@
 const { isUpdate } = require('ssb-gathering-schema')
 const { isGathering } = require('ssb-gathering-schema')
 const getHeads = require('../../lib/get-heads')
-const permittedOpts = require('../../lib/permitted-opts')
+const permittedOpts = require('../sync/permitted-opts')
 
 module.exports = function (server) {
   return function buildUpdate (gatheringOrKey, opts, cb) {
-    const content = Object.assign({ type: 'about' }, permittedOpts(opts))
+    const content = Object.assign(
+      { type: 'about' },
+      permittedOpts(opts)
+    )
 
     if (gatheringOrKey === null) {
       content.about = '%DummyKey++Qn5L+xP696fLq6qfIvRS4DBt4QXicas0A=.sha256'
@@ -38,4 +41,3 @@ module.exports = function (server) {
     }
   }
 }
-
