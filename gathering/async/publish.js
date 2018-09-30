@@ -14,8 +14,6 @@ module.exports = function (server) {
       buildGathering(opts, (err, _gathering) => {
         if (err) return cb(err)
 
-        debugger
-
         server.publish(_gathering, (err, gathering) => {
           if (err) return cb(err)
 
