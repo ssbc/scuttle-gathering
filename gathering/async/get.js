@@ -56,23 +56,30 @@ function reduceUpdates (thread) {
 }
 
 function reduceAttendees (myKey, thread) {
-  const attendees = thread
+  const [attendees, unAttendees] = thread
     .filter(isAttendee)
-    .reduce((acc, msg) => {
+    .reduce(([accAttendee, accUnattendee], msg) => {
       const { link, remove } = msg.value.content.attendee
       // only trust attendee calls from people themselves for now
       if (msg.value.author !== link) return acc
 
       if (remove) {
-        return acc.filter(feedId => feedId !== link)
+        accAttendee = accAttendee.filter(feedId => feedId !== link)
+        if(!accUnattendee.includes(link)) {
+          accUnattendee = [...accUnattendee, link]
+        }
       } else {
-        if (acc.includes(link)) return acc
-        else return [...acc, link]
+        accUnattendee = accUnattendee.filter(feedId => feedId !== link)
+        if (!accAttendee.includes(link)) {
+          accAttendee = [...accAttendee, link]
+        }
       }
-    }, [])
+      return [accAttendee, accUnattendee]
+    }, [[], []])
 
   return {
     isAttendee: attendees.includes(myKey),
-    attendees
+    attendees,
+    unAttendees
   }
 }

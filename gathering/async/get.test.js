@@ -43,11 +43,13 @@ group('gathering.async.get', test => {
         ], 'has all images added')
 
         t.deepEqual(doc.attendees, [ server.id ], 'shows me attending')
+        t.deepEqual(doc.unAttendees, [], 'doesnt show me as not attending')
         scuttle.attendee.async.publish(gathering.key, false, (err, attendee) => {
           if (err) throw (err)
           scuttle.gathering.async.get(gathering.key, (err, doc) => {
             if (err) throw (err)
             t.deepEqual(doc.attendees, [], 'shows me no longer attending')
+            t.deepEqual(doc.unAttendees, [ server.id ], 'shows me as not attending')
 
             done()
           })
