@@ -56,30 +56,38 @@ function reduceUpdates (thread) {
 }
 
 function reduceAttendees (myKey, thread) {
-  const [attendees, unAttendees] = thread
+  const { attendees, notAttendees } = thread
     .filter(isAttendee)
-    .reduce(([accAttendee, accUnattendee], msg) => {
-      const { link, remove } = msg.value.content.attendee
+    .reduce((acc, msg) => {
+      const { link: feedId, remove } = msg.value.content.attendee
       // only trust attendee calls from people themselves for now
-      if (msg.value.author !== link) return acc
+      if (msg.value.author !== feedId) return acc
 
       if (remove) {
-        accAttendee = accAttendee.filter(feedId => feedId !== link)
-        if(!accUnattendee.includes(link)) {
-          accUnattendee = [...accUnattendee, link]
-        }
+        add(acc.notAttendees, feedId)
+        strip(acc.attendees, feedId)
       } else {
-        accUnattendee = accUnattendee.filter(feedId => feedId !== link)
-        if (!accAttendee.includes(link)) {
-          accAttendee = [...accAttendee, link]
-        }
+        add(acc.attendees, feedId)
+        strip(acc.notAttendees, feedId)
       }
-      return [accAttendee, accUnattendee]
-    }, [[], []])
+
+      return acc
+    }, { attendees: [], notAttendees: [] })
 
   return {
     isAttendee: attendees.includes(myKey),
     attendees,
-    unAttendees
+    notAttendees
   }
+}
+
+function strip (arr, id) {
+  const i = arr.findIndex(el => el === id)
+  if (i < 0) return
+
+  arr.splice(i, 1)
+}
+
+function add (arr, id) {
+  if (!arr.includes(id)) arr.push(id)
 }
