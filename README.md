@@ -89,6 +89,7 @@ Gets a 'document' - a reduced state of the 'gathering as a whole' of the form:
   images: [ Image, Image, ... ] // Objects of same form as image property
   isAttendee: Boolean,
   attendees: [ FeedId, FeedId, ... ],
+  notAttendees: [ FeedId, FeedId, ... ], // people who have explicitly said they are not coming, or cancelled
   heads: [ MessageId, .... ], // most recent message(s) in the document/ thread
   threads: [ MessageId, ... ] // all backlinks in causal order
 }
