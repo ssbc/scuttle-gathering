@@ -2,6 +2,7 @@ const { group } = require('tape-plus')
 const Scuttle = require('../../')
 const Server = require('../../lib/testbot')
 const getBacklinks = require('../../lib/get-backlinks')
+const unboxMsg = require('../../lib/unbox-message')
 
 group('update.async.publish', test => {
   var server
@@ -28,8 +29,8 @@ group('update.async.publish', test => {
     scuttle.gathering.async.publish(opts, (err, gathering) => {
       if (err) console.error(err)
 
-      getBacklinks(server)(gathering, (err, { thread, backlinks }) => {
-        if (err) console.error(err)
+      getBacklinks(server)(unboxMsg(gathering, server.keys), (err, { thread }) => {
+        t.false(err)
 
         const [ initialUpdate ] = thread
         t.equal(initialUpdate.value.content.branch, gathering.key, 'initial update has backlink of gathering')

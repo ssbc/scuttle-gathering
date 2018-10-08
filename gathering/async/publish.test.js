@@ -2,6 +2,7 @@ const { group } = require('tape-plus')
 const Scuttle = require('../../')
 const Server = require('../../lib/testbot')
 const getBacklinks = require('../../lib/get-backlinks')
+const unboxMsg = require('../../lib/unbox-message')
 
 group('gathering.async.publish', test => {
   var server
@@ -31,7 +32,6 @@ group('gathering.async.publish', test => {
     }
 
     scuttle.gathering.async.publish(opts, (err, gathering) => {
-      if (err) console.log(opts)
       t.false(err, 'no error')
 
       const { type, progenitor, mentions } = gathering.value.content
@@ -41,7 +41,7 @@ group('gathering.async.publish', test => {
       t.deepEqual(mentions, opts.mentions, 'mentions')
 
       getBacklinks(server)(gathering, (err, { thread, backlinks }) => {
-        if (err) console.log(err)
+        t.false(err)
 
         t.true(thread.length === 1, 'there is only one backlink')
         t.equal(thread[0].value.content.type, 'about', 'the backlink is an about message')
@@ -73,8 +73,17 @@ group('gathering.async.publish', test => {
     }
 
     scuttle.gathering.async.publish(opts, (err, gathering) => {
-      console.log('HERE', err, gathering)
-      done()
+      t.false(err, 'no error')
+      t.equal(typeof gathering.value.content, 'string', 'encrypted gathering')
+
+      getBacklinks(server)(unboxMsg(gathering, server.keys), (err, data) => {
+        t.false(err, 'no getBacklinks error')
+
+        const { thread } = data
+        t.true(thread.length === 1, 'there is only one backlink')
+        t.equal(thread[0].value.content.type, 'about', 'the backlink is an about message')
+        done()
+      })
     })
   })
 
