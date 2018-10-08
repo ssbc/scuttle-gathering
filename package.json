@@ -4,7 +4,9 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "tape '{,!(node_modules)/**/}*.test.js' | tap-spec",
+    "test": "npm run test:js && npm run test:lint",
+    "test:js": "tape '{,!(node_modules)/**/}*.test.js' | tap-spec",
+    "test:lint": "standard --fix",
     "test-server": "node research/server.js"
   },
   "repository": {

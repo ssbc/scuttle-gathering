@@ -25,6 +25,7 @@ group('attendee.async.publish', test => {
 
   test('happy path, attending', (t, done) => {
     scuttle.gathering.async.publish(opts, (err, gathering) => {
+      if (err) console.error(err)
       scuttle.attendee.async.publish(gathering.key, (err, msg) => {
         t.false(err, 'no error')
         t.true(isAttendee(msg))
@@ -36,6 +37,7 @@ group('attendee.async.publish', test => {
 
   test('happy path, not attending', (t, done) => {
     scuttle.gathering.async.publish(opts, (err, gathering) => {
+      if (err) console.error(err)
       scuttle.attendee.async.publish(gathering.key, false, (err, msg) => {
         t.false(err, 'no error')
         t.true(isAttendee(msg))
