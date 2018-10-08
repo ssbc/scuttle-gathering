@@ -1,7 +1,6 @@
 const pick = require('lodash.pick')
-const PERMITTED_OPTS = 'progenitor mentions'
+const PERMITTED_OPTS = 'progenitor mentions recps'
   .split(' ')
-// TODO add recps when we enable private gatherings
 
 module.exports = function permittedOpts (opts) {
   return pick(opts, PERMITTED_OPTS)

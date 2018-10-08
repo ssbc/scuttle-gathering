@@ -1,5 +1,6 @@
 const buildUpdate = require('../../update/async/build')
 const buildGathering = require('./build')
+const publish = require('../../lib/publish-message')
 
 module.exports = function (server) {
   return function publishGathering (opts, cb) {
@@ -14,12 +15,12 @@ module.exports = function (server) {
       buildGathering(opts, (err, _gathering) => {
         if (err) return cb(err)
 
-        server.publish(_gathering, (err, gathering) => {
+        publish(server)(_gathering, (err, gathering) => {
           if (err) return cb(err)
 
           update.about = gathering.key
           update.branch = gathering.key
-          server.publish(update, (err, update) => {
+          publish(server)(update, (err, update) => {
             if (err) cb(err)
             else cb(null, gathering)
           })

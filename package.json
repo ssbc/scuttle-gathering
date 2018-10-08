@@ -24,7 +24,8 @@
     "pull-stream": "^3.6.9",
     "scuttle-inject": "^1.0.3",
     "ssb-gathering-schema": "^1.2.0",
-    "ssb-ref": "^2.11.2",
+    "ssb-keys": "^7.1.3",
+    "ssb-ref": "^2.12.0",
     "ssb-sort": "^1.1.0"
   },
   "devDependencies": {

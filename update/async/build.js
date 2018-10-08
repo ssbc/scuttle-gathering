@@ -24,6 +24,8 @@ module.exports = function (server) {
 
         const gathering = { key: root, value }
         if (!isGathering(gathering)) return cb(new Error('Gathering updates must target valid gatherings!'))
+        // TODO uhhh sbot get might return encrypted messages D:
+        if (value.content.recps) content.recps = value.content.recps
 
         getHeads(server)(gathering, (err, heads) => {
           if (err) return cb(err)
