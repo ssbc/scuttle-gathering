@@ -13,6 +13,7 @@ Client(config.keys, config, (err, server) => {
   pull(
     attendanceStreamForFeed(myKey, server),
     pull.collect((err, attendingData) => {
+      if (err) console.error(err)
       console.log('a) time:', (new Date() - startTime) / 1000, 's')
 
       const attending = attendingData.reduce((soFar, item) => {
@@ -27,6 +28,7 @@ Client(config.keys, config, (err, server) => {
       pull(
         gatheringStreamFilteredByKeys(attending, server),
         pull.collect((err, gatherings) => {
+          if (err) console.error(err)
           console.log('c) time:', (new Date() - startTime) / 1000, 's')
 
           // console.log(gatherings)
