@@ -2,7 +2,6 @@ const { group } = require('tape-plus')
 const Scuttle = require('../../')
 const Server = require('../../lib/testbot')
 const getBacklinks = require('../../lib/get-backlinks')
-const unboxMsg = require('../../lib/unbox-message')
 
 group('gathering.async.publish', test => {
   var server
@@ -74,16 +73,50 @@ group('gathering.async.publish', test => {
 
     scuttle.gathering.async.publish(opts, (err, gathering) => {
       t.false(err, 'no error')
-      t.equal(typeof gathering.value.content, 'string', 'encrypted gathering')
+      server.get(gathering.key, (err, value) => {
+        t.false(err, 'no error')
+        t.equal(typeof value.content, 'string', 'encrypted gathering')
 
-      getBacklinks(server)(unboxMsg(gathering, server.keys), (err, data) => {
-        t.false(err, 'no getBacklinks error')
+        getBacklinks(server)(gathering, (err, data) => {
+          t.false(err, 'no getBacklinks error')
 
-        const { thread } = data
-        t.true(thread.length === 1, 'there is only one backlink')
-        t.equal(thread[0].value.content.type, 'about', 'the backlink is an about message')
-        done()
+          const { thread } = data
+          t.true(thread.length === 1, 'there is only one backlink')
+          t.equal(thread[0].value.content.type, 'about', 'the backlink is an about message')
+          done()
+        })
       })
+    })
+  })
+
+  test('unhappy path (private gathering)', (t, done) => {
+    const opts = {
+      title: 'ziva\'s birthday party',
+      startDateTime: {
+        epoch: Date.now() + 5000
+      },
+      mentions: [
+        { link: '@EMovhfIrFk4NihAKnRNhrfRaqIhBv1Wj8pTxJNgvCCY=.ed25519', name: 'dominic' },
+        { link: '@+oaWWDs8g73EZFUMfW37R/ULtFEjwKN/DczvdYihjbU=.ed25519', name: 'christian' },
+        '@U5GvOKP/YUza9k53DSXxT0mk3PIrnyAmessvNfZl5E0=.ed25519'
+      ],
+      recps: [
+        server.id,
+        { link: '@gaQw6z30GpfsW9k8V5ED4pHrg8zmrqku24zTSAINhRg=.ed25519', name: 'SoapDog' },
+        { link: '@EMovhfIrFk4NihAKnRNhrfRaqIhBv1Wj8pTxJNgvCCY=.ed25519', name: 'dominic' },
+        { link: '@+oaWWDs8g73EZFUMfW37R/ULtFEjwKN/DczvdYihjbU=.ed25519', name: 'christian' },
+        { link: '@gaQw6z30GpfsW9k8V5ED4pHrg8zmrqku24zTSAINhR2=.ed25519', name: 'SoapDog2' },
+        { link: '@EMovhfIrFk4NihAKnRNhrfRaqIhBv1Wj8pTxJNgvCC2=.ed25519', name: 'dominic2' },
+        { link: '@+oaWWDs8g73EZFUMfW37R/ULtFEjwKN/DczvdYihjb2=.ed25519', name: 'christian2' },
+        { link: '@gaQw6z30GpfsW9k8V5ED4pHrg8zmrqku24zTSAINhR3=.ed25519', name: 'SoapDog3' } // 8th recp
+      ]
+    }
+
+    scuttle.gathering.async.publish(opts, (err, gathering) => {
+      t.true(err, 'cannot have more than 7 recps')
+      t.equal(err[0].field, 'data.recps', 'definitely fails on recps validation')
+
+      done()
     })
   })
 

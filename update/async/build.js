@@ -1,6 +1,7 @@
 const { isUpdate } = require('ssb-gathering-schema')
 const { isGathering } = require('ssb-gathering-schema')
 const getHeads = require('../../lib/get-heads')
+const getMsg = require('../../lib/get-message')
 const permittedOpts = require('../sync/permitted-opts')
 
 module.exports = function (server) {
@@ -15,27 +16,26 @@ module.exports = function (server) {
       // this supports us pre-checking valid data for initial gathering update
       // the gatheringKey is over-written later in gathering/async/publish.js
       // the branch is also set to this there
-      done(content)
-    } else {
-      const root = gatheringOrKey.key || gatheringOrKey
+      return done(content)
+    }
 
-      server.get(root, (err, value) => {
+    const root = gatheringOrKey.key || gatheringOrKey
+    content.about = root
+
+    getMsg(server)(root, (err, gathering) => {
+      if (err) return cb(err)
+      if (!isGathering(gathering)) return cb(new Error('Gathering updates must target valid gatherings!'))
+
+      const { recps } = gathering.value.content
+      if (recps) content.recps = recps
+
+      getHeads(server)(gathering, (err, heads) => {
         if (err) return cb(err)
 
-        const gathering = { key: root, value }
-        if (!isGathering(gathering)) return cb(new Error('Gathering updates must target valid gatherings!'))
-        // TODO uhhh sbot get might return encrypted messages D:
-        if (value.content.recps) content.recps = value.content.recps
-
-        getHeads(server)(gathering, (err, heads) => {
-          if (err) return cb(err)
-
-          content.about = root
-          content.branch = heads
-          done(content)
-        })
+        content.branch = heads
+        done(content)
       })
-    }
+    })
 
     function done (content) {
       if (isUpdate(content)) cb(null, content)

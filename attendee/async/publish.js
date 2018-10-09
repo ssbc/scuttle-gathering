@@ -1,4 +1,5 @@
 const buildAttendee = require('./build')
+const publish = require('../../lib/publish-message')
 
 module.exports = function (server) {
   return function publishAttendee (gatheringKey, isAttending, cb) {
@@ -7,7 +8,7 @@ module.exports = function (server) {
     buildAttendee(server)(gatheringKey, isAttending, (err, content) => {
       if (err) return cb(err)
 
-      server.publish(content, cb)
+      publish(server)(content, cb)
     })
   }
 }

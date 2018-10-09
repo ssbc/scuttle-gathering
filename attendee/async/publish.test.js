@@ -25,7 +25,8 @@ group('attendee.async.publish', test => {
 
   test('happy path, attending', (t, done) => {
     scuttle.gathering.async.publish(opts, (err, gathering) => {
-      if (err) console.error(err)
+      t.false(err, 'no err')
+
       scuttle.attendee.async.publish(gathering.key, (err, msg) => {
         t.false(err, 'no error')
         t.true(isAttendee(msg))
@@ -37,10 +38,36 @@ group('attendee.async.publish', test => {
 
   test('happy path, not attending', (t, done) => {
     scuttle.gathering.async.publish(opts, (err, gathering) => {
-      if (err) console.error(err)
+      t.false(err, 'no err')
+
       scuttle.attendee.async.publish(gathering.key, false, (err, msg) => {
         t.false(err, 'no error')
         t.true(isAttendee(msg))
+
+        done()
+      })
+    })
+  })
+
+  test('happy path, attending (private)', (t, done) => {
+    const _opts = Object.assign({}, opts, {
+      recps: [
+        server.id,
+        {
+          link: '@gaQw6z30GpfsW9k8V5ED4pHrg8zmrqku24zTSAINhRg=.ed25519',
+          name: 'SoapDog'
+        }
+      ]
+    })
+
+    scuttle.gathering.async.publish(_opts, (err, gathering) => {
+      t.false(err, 'no err')
+
+      scuttle.attendee.async.publish(gathering.key, (err, msg) => {
+        t.false(err, 'no error')
+        t.true(isAttendee(msg))
+        t.equal(msg.value.private, true, 'is private')
+        t.deepEqual(msg.value.content.recps, _opts.recps, 'same recps as gathering')
 
         done()
       })

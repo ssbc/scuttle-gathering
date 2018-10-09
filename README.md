@@ -34,12 +34,17 @@ alias of:  `scuttle.gathering.async.publish`
     name: String,        // name, size, type are optional
     size: Integer,
     type: MimeTypeString
-  }
+  },
+  mentions: Array,       // optional
+  recps: Array           // optional
 }
 ```
 
-`cb` : a callback of signature `(err, data)`
+The `mentions` and `recps` Arrays require elements that are of form `FeedId` or `{ link: FeedId, name: String }`.
+If `recps` is are provided, **the gathering and all interactions with it will be private** (encrypted to the listed `recps`).
+A maximum of 7 recps can be provided, and you must manually include yourself (if you want to be able to see the gathering in future)
 
+`cb` : a callback of signature `(err, data)`
 
 ### `scuttle.put(gatheringKey, opts, cb)`
 

@@ -1,6 +1,7 @@
 const buildUpdate = require('../../update/async/build')
 const buildGathering = require('./build')
 const publish = require('../../lib/publish-message')
+const unboxMsg = require('../../lib/unbox-message')
 
 module.exports = function (server) {
   return function publishGathering (opts, cb) {
@@ -21,8 +22,8 @@ module.exports = function (server) {
           update.about = gathering.key
           update.branch = gathering.key
           publish(server)(update, (err, update) => {
-            if (err) cb(err)
-            else cb(null, gathering)
+            if (err) return cb(err)
+            unboxMsg(server)(gathering, cb)
           })
         })
       })

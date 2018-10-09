@@ -63,10 +63,12 @@ group('gathering.async.get', test => {
   })
 
   // helper
-  function setupGathering (cb) {
+  function setupGathering (opts, cb) {
+    if (typeof opts === 'function') return setupGathering({}, opts)
+
     var epoch = now + 5000
 
-    const initialGathering = {
+    const initialGathering = Object.assign({
       title: 'ziva\'s birthday',
       startDateTime: {
         epoch,
@@ -78,7 +80,7 @@ group('gathering.async.get', test => {
         size: 1049416,
         type: 'image/jpeg'
       }
-    }
+    }, opts)
 
     const anUpdate = {
       startDateTime: { epoch: now + 750 },

@@ -1,6 +1,7 @@
 const { isUpdate, isAttendee } = require('ssb-gathering-schema')
 const { heads } = require('ssb-sort')
 const merge = require('lodash.merge')
+const getMsg = require('../../lib/get-message')
 const getBacklinks = require('../../lib/get-backlinks')
 const permittedGathering = require('../sync/permitted-opts')
 const permittedUpdates = require('../../update/sync/permitted-opts')
@@ -13,14 +14,13 @@ const EMPTY_DOC = {
 
 module.exports = function (server) {
   return function getGathering (key, cb) {
-    server.get(key, (err, value) => {
+    getMsg(server)(key, (err, gathering) => {
       if (err) return cb(err)
 
-      const gathering = { key, value }
-
-      getBacklinks(server)(gathering, (err, { thread, backlinks }) => {
+      getBacklinks(server)(gathering, (err, data) => {
         if (err) return cb(err)
 
+        const { thread, backlinks } = data
         const doc = merge(
           { key },
           permittedGathering(gathering.value.content),
