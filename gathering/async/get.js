@@ -51,6 +51,8 @@ function reduceUpdates (thread) {
         delete update.image
       }
 
+      if (update.mentions) delete update.mentions
+
       return merge(acc, update)
     }, { images: [] })
 }
