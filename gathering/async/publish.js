@@ -21,6 +21,8 @@ module.exports = function (server) {
 
           update.about = gathering.key
           update.branch = gathering.key
+          if (gathering.value.content.recps) update.recps = gathering.value.content.recps
+
           publish(server)(update, (err, update) => {
             if (err) return cb(err)
             unboxMsg(server)(gathering, cb)

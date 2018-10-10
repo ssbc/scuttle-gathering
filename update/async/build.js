@@ -16,6 +16,7 @@ module.exports = function (server) {
       // this supports us pre-checking valid data for initial gathering update
       // the gatheringKey is over-written later in gathering/async/publish.js
       // the branch is also set to this there
+
       return done(content)
     }
 

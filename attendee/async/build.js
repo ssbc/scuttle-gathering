@@ -15,7 +15,7 @@ module.exports = function (server) {
         attendee: isAttending ? { link: server.id } : { link: server.id, remove: true }
       }
 
-      const recps = gathering.value.content.recps
+      const { recps } = gathering.value.content
       if (recps) content.recps = recps
 
       // TODO add branch link in update/async/build.js

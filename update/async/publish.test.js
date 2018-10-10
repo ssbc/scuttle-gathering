@@ -65,24 +65,20 @@ group('update.async.publish', test => {
       },
       recps: [
         server.id,
-        {
-          link: '@gaQw6z30GpfsW9k8V5ED4pHrg8zmrqku24zTSAINhRg=.ed25519',
-          name: 'SoapDog'
-        }
+        '@gaQw6z30GpfsW9k8V5ED4pHrg8zmrqku24zTSAINhRg=.ed25519'
       ]
     }
 
     // publish Gathering and initialUpdate
     scuttle.gathering.async.publish(opts, (err, gathering) => {
-      t.false(err)
+      t.false(err, 'no error publishing gathering')
 
       getBacklinks(server)(gathering, (err, data) => {
-        t.false(err)
+        t.false(err, 'no err getting backlinks')
         const { thread } = data
 
         const [ initialUpdate ] = thread
         const { content, cyphertext, private: isPrivate } = initialUpdate.value
-
         t.equal(content.branch, gathering.key, 'initial update has backlink of gathering')
         t.deepEqual(content.recps, opts.recps, 'same recps as gathering')
         t.equal(isPrivate, true, 'updates are private')
